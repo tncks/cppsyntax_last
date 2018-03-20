@@ -1,0 +1,138 @@
+#include "stdafx.h"
+#include <iostream> 
+
+void CPU_Destroyer(void) {
+	std::cout << "CPU_Destroyer" << std::endl;
+}
+
+int CPU_Calculate(int cmd, int arg1, int arg2) {
+	std::cout << "CPU_Calculate" << std::endl;
+	return 0;
+}
+
+void GPU_Destroyer(void) {
+	std::cout << "GPU_Destroyer" << std::endl;
+}
+
+void GPU_Output(int x, int y, int value) {
+	std::cout << "GPU_Output" << std::endl;
+}
+
+void Computer_Destroyer(void) {
+	std::cout << "Computer_Destroyer" << std::endl;
+}
+
+int Computer_Calculate(int cmd, int arg1, int arg2) {
+	std::cout << "Computer_Calculate" << std::endl;
+	return 0;
+}
+
+void Computer_Output(int x, int y, int value) {
+	std::cout << "Computer_Output" << std::endl;
+}
+
+struct vtable_CPU {
+	void (*Destroyer)(void);
+	int (*Calculate)(int cmd, int arg1, int arg2);
+};
+
+struct vtable_GPU {
+	void (*Destroyer)(void);
+	void (*Output)(int x, int y, int value);
+};
+
+vtable_CPU CPU_VTable = {
+	CPU_Destroyer,
+	CPU_Calculate
+};
+
+vtable_GPU GPU_VTable = {
+	GPU_Destroyer,
+	GPU_Output
+};
+
+vtable_CPU Computer_CPU_VTable = {
+	Computer_Destroyer,
+	Computer_Calculate
+};
+
+vtable_GPU Computer_GPU_VTable = {
+	Computer_Destroyer,
+	Computer_Output
+};
+
+class CPU {
+public:
+	vtable_CPU * vtable_cpu;
+	virtual ~CPU(void)
+	{
+
+	}
+
+	virtual int Calculate(int cmd, int arg1, int arg2) {
+		return arg1 + arg2;
+	}
+};
+
+class GPU
+{
+public:
+	vtable_GPU * vtable_gpu;
+
+	virtual ~GPU(void)
+	{
+
+	}
+
+	virtual void Output(int x, int y, int value)
+	{
+		std::cout << value << std::endl;
+	}
+};
+
+struct Computer : public CPU, public GPU {
+	int value3;
+	
+	void *operator new(size_t size) {
+		void *mem = malloc(size);
+
+		reinterpret_cast<Computer *>(mem)->vtable_cpu = &Computer_CPU_VTable;
+		reinterpret_cast<Computer *>(mem)->vtable_gpu = &Computer_GPU_VTable;
+
+		return mem;
+	}
+//public:
+	void PowerOn(void) {
+		std::cout << "Power On!" << std::endl;
+		return;
+	}
+
+	virtual ~Computer(void) {
+
+	}
+
+	virtual int Calculate(int cmd, int arg1, int arg2) {
+		std::cout << "Calculate" << std::endl;
+		return arg1 - arg2;
+	}
+
+	virtual void Output(int x, int y, int value)
+	{
+		std::cout << "Output" << std::endl;
+		std::cout << "Computer!" << std::endl;
+	}
+};
+
+int main(void)
+{
+	using namespace std;
+
+	//char *rawPtr = reinterpret_cast<char *>(new Computer);
+
+	GPU *ptr = reinterpret_cast<GPU *>(new Computer);
+	
+	ptr->vtable_gpu->Output(0, 0, 0xFF00FF00);
+	ptr->vtable_gpu->Destroyer();
+
+	return 0;
+}

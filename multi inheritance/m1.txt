@@ -1,0 +1,43 @@
+#include "stdafx.h"
+#include <iostream> 
+
+class CPU {
+public:
+	int Calculate(int cmd, int arg1, int arg2) {
+		return arg1 + arg2;
+	}
+};
+
+class GPU
+{
+public:
+	void Output(int x, int y, int value)
+	{
+		std::cout << value << std::endl;
+	}
+};
+
+class Computer : public CPU, public GPU {
+public:
+	void PowerOn(void) {
+		std::cout << "Power On!" << std::endl;
+		return;
+	}
+};
+
+int main(void)
+{
+	using namespace std;
+
+	Computer comp;
+
+	comp.PowerOn();
+
+	cout << "계산 결과: ";
+	cout << comp.Calculate(0, 10, 15) << endl;
+
+	cout << "출력 결과 : ";
+	comp.Output(0, 0, 0xFF0000FF);
+
+	return 0;
+}

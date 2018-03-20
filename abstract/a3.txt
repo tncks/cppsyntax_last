@@ -1,0 +1,73 @@
+#include "stdafx.h"
+#include <iostream> 
+
+struct vtable {
+	void (*Method1)(void);
+	void (*Method2)(void);
+};
+
+void CData_Method1(void) {
+	std::cout << "CData_Method1" << std::endl;
+}
+
+void CData_Method2(void) {
+	std::cout << "CData_Method2" << std::endl;
+}
+
+void CInh_Method1(void) {
+	std::cout << "CInh_Method1" << std::endl;
+}
+
+void CInh_Method2(void) {
+	std::cout << "CInh_Method2" << std::endl;
+}
+
+
+vtable vt_CData = { CData_Method1, CData_Method2 };
+vtable vt_CInh = { CInh_Method1, CInh_Method2 };
+
+struct __declspec(novtable) CData {
+	vtable *vt_ptr;
+
+	void *operator new(size_t size) {
+		void *ptr = malloc(size);
+
+		((CData *)ptr)->vt_ptr = &vt_CData;
+
+		return ptr;
+	}
+};
+
+struct __declspec(novtable) CInh : public CData{
+	vtable *vt_ptr;
+	;                                                                                                                                                                                                 
+	void *operator new(size_t size) {
+		void *ptr = malloc(size);
+
+		((CData *)ptr)->vt_ptr = &vt_CInh;
+
+		return ptr;
+	}
+};
+
+
+
+
+int main(void)
+{
+	CData *ptr = new CData;
+
+	ptr->vt_ptr->Method1();
+	ptr->vt_ptr->Method2();
+
+	delete ptr;
+
+	ptr = new CInh;
+
+	ptr->vt_ptr->Method1();
+	ptr->vt_ptr->Method2();
+
+	delete ptr;
+
+	return 0;
+}

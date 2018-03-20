@@ -1,0 +1,63 @@
+#include "stdafx.h"
+#include <iostream> 
+
+class CPU {
+public:
+	virtual ~CPU(void)
+	{
+
+	}
+
+	virtual int Calculate(int cmd, int arg1, int arg2) {
+		return arg1 + arg2;
+	}
+};
+
+class GPU
+{
+public:
+
+	virtual ~GPU(void)
+	{
+
+	}
+
+	virtual void Output(int x, int y, int value)
+	{
+		std::cout << value << std::endl;
+	}
+};
+
+class Computer : public CPU, public GPU {
+public:
+	void PowerOn(void) {
+		std::cout << "Power On!" << std::endl;
+		return;
+	}
+
+	virtual ~Computer(void) {
+
+	}
+
+	virtual int Calculate(int cmd, int arg1, int arg2) {
+		return arg1 - arg2;
+	}
+
+	virtual void Output(int x, int y, int value)
+	{
+		std::cout << "Computer!" << std::endl;
+	}
+};
+
+int main(void)
+{
+	using namespace std;
+
+	GPU *gpu = dynamic_cast<GPU *>(new Computer);
+	
+	gpu->Output(0, 0, 0);
+
+	delete gpu;
+
+	return 0;
+}

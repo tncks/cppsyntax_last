@@ -1,0 +1,20 @@
+#include "stdafx.h"
+#include <iostream> 
+
+inline void PRINT(const char *);
+
+int main(void)
+{
+	PRINT("Hello World!");
+
+	return 0;
+}
+
+inline void PRINT(const char *str)
+{
+	using namespace std;
+
+	cout << str << endl;
+
+	return;
+}

@@ -1,0 +1,23 @@
+#include "stdafx.h"
+#include <iostream> 
+
+struct CData {
+	void (*Print)(void);
+};
+
+void Print(void) {
+	std::cout << "Hello World" << std::endl;
+
+	return;
+}
+
+int main(void)
+{
+	CData *ptr = (CData *)malloc(sizeof(CData));
+
+	ptr->Print = Print;
+
+	ptr->Print();
+
+	return 0;
+}

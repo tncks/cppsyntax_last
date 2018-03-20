@@ -1,0 +1,36 @@
+#include "stdafx.h"
+#include <iostream> 
+
+template <typename Ty>
+Ty Sum(Ty arg1, Ty arg2) {
+	return arg1 + arg2;
+}
+
+template <>
+const char *Sum<const char *>(const char *arg1, const char *arg2) {
+	char *ret = 0;
+	unsigned int len = 0;
+
+	len = strlen(arg1) + strlen(arg2) + 1;
+
+	ret = new char[len];
+	strcpy_s(ret, len, arg1);
+	strcat_s(ret, len, arg2);
+
+	return ret;
+}
+
+int main(void)
+{
+	using namespace std;
+
+	cout << "3 + 5  = " << Sum(3, 5) << endl;
+
+	const char *str = 0;
+
+	cout << (str = Sum("Hello, ", "World!")) << endl;
+
+	delete[] str;
+
+	return 0;
+}

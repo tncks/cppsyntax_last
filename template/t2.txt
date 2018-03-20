@@ -1,0 +1,56 @@
+#include "stdafx.h"
+#include <iostream> 
+
+template <typename T>
+class CArray {
+private:
+	T *pNum;
+
+public:
+	CArray(int count, T ...);
+	~CArray(void);
+
+	T &operator[](int index);
+	const T &operator[](int index) const;
+};
+
+int main(void)
+{
+	using namespace std;
+
+	CArray<int> arr(10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+	cout << arr[9] << endl;
+
+	return 0;
+}
+
+template <typename T>
+CArray<T>::CArray(int count, T ...)
+	: pNum(0)
+{
+	T *ptr = 0;
+
+	pNum = new T[count];
+
+	ptr = reinterpret_cast<T *>((&count) + 1);
+	for (int i = 0; i < count; i++)
+	{
+		pNum[i] = ptr[i];
+	}
+}
+
+template <typename T>
+CArray<T>::~CArray(void) {
+	delete[] pNum;
+}
+
+template <typename T>
+T &CArray<T>::operator[](int index) {
+	return pNum[index];
+}
+
+template <typename T>
+const T &CArray::operator[](int index) const{
+	return pNum[index];
+}

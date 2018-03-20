@@ -1,0 +1,22 @@
+#include "stdafx.h"
+#include <iostream> 
+
+struct Interface {
+	virtual void Print(void) abstract;
+};
+
+class Data : public Interface {
+	void Print(void) {
+		std::cout << "Hello, World!" << std::endl;
+	}
+};
+
+int main(void) {
+	Interface *ptr = new Data;
+
+	ptr->Print();
+
+	delete ptr;
+
+	return 0;
+}
